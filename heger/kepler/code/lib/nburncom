@@ -1,0 +1,1 @@
+      integer(kind=int32), parameter :: nburn = 8192
