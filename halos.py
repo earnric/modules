@@ -98,8 +98,8 @@ def getViewStars(locs, mass, ages, Z, PZ, PPF, haloPos, fov=10):
     centrd = locs - haloPos  # (0,0) is now the center of the halo, z??
     centrd2D = centrd[::, [0, 1]]  # Just keep 2D data...
 
-    cond = (np.abs(centrd2D[::, 0]) <= xydist) & (
-        np.abs(centrd2D[::, 1]) <= xydist)
+    cond = (np.abs(centrd2D[::, 0]) <= xydist) & 
+        (np.abs(centrd2D[::, 1]) <= xydist)
     haloStars = centrd[
         cond
     ]  # Note that we're getting 0,0 centered coords, but ignoring z!
