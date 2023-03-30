@@ -11,7 +11,8 @@ cmInPc = 3.086e18
 
 
 def loadSP(z, prefix="./", normedLocs=False, gz=False):
-    """loadSP - loads the locs, mass, birthTimes, Z, PZ, PPF files from the local dir
+    """
+    loadSP - loads the locs, mass, birthTimes, Z, PZ, PPF files from the local dir
     This routine assumes the sp*.txt files are located in the current dir. However,
     you can override that by specifying the path as the second parameter.
     It will also handle gziped files: just override gz=False (default) in the
@@ -85,7 +86,7 @@ def loadHaloGrps(num, prefix="./hop/"):
     return the number of particles in the halo.
     Return
        Position in x,y,z in the range -.5,.5
-       Number of DM particles in the halo
+       Number of (DM) particles in the halo
     """
     # Key to pos file is #   npart,mass,cont.frac,xc,yc,zc,uc,vc,wc
     grpfile = prefix + "grp%05d.pos" % num
@@ -103,8 +104,7 @@ def loadHaloSizes(num, prefix="./hop/"):
     """
     # Key to pos file is #   npart,mass,cont.frac,xc,yc,zc,uc,vc,wc
     grpfile = prefix + "grp%05d.size" % num
-    sizeList = np.loadtxt(
-        grpfile,
+    sizeList = np.loadtxt( grpfile,
         dtype={"names": ("index", "count"), "formats": ("i4", "i8")},
         skiprows=3,
     )
@@ -127,7 +127,7 @@ def loadHaloXtra(z, prefix="./"):
     return halosRawPos  # Just return position information, normalized to (-0.5,0.5)
 
 
-def loadAllHalos(z, prefix="./"):
+def loadAllHalos(z, prefix="./",hopOnly=False):
     """loadAllHalos - loads the halo locations from the txt file.
     This file contains a list of halo positions, stellar masses and radii
     The data is expected to be in the form:
@@ -140,9 +140,14 @@ def loadAllHalos(z, prefix="./"):
     """
     # Key to pos file is x,y,z, mass, rad ... all normalized to -0.5->0.5 for position
     # and 0-1 for radius.
-    halofile = prefix + "All_halos_{:.1f}.txt".format(z)
+    if hopOnly:
+        halofile = prefix + "All_halos_{:.1f}_hopOnly.txt".format(z)
+    else:
+        halofile = prefix + "All_halos_{:.1f}.txt".format(z)
     halosRaw = np.loadtxt(halofile, skiprows=1)
     # Returns position information, normalized to (-0.5,0.5)
+    if halosRaw.shape == (5,):
+        halosRaw = np.array([halosRaw])
     return halosRaw[:, 0:3], halosRaw[:, 3], halosRaw[:, 4]
 
 

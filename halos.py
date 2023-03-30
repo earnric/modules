@@ -98,8 +98,7 @@ def getViewStars(locs, mass, ages, Z, PZ, PPF, haloPos, fov=10):
     centrd = locs - haloPos  # (0,0) is now the center of the halo, z??
     centrd2D = centrd[::, [0, 1]]  # Just keep 2D data...
 
-    cond = (np.abs(centrd2D[::, 0]) <= xydist) & 
-        (np.abs(centrd2D[::, 1]) <= xydist)
+    cond = (np.abs(centrd2D[::, 0]) <= xydist) & (np.abs(centrd2D[::, 1]) <= xydist)
     haloStars = centrd[
         cond
     ]  # Note that we're getting 0,0 centered coords, but ignoring z!
@@ -116,7 +115,7 @@ def getHaloStars_normed(locs, mass, ages, Z, PZ, PPF, haloPos, radius):
     """getHaloStars_normed - returns locations, masses, ages, Z, PZ, PPF of all stars within a specified
     distance of haloPos.
     Parameters are star particle locations, mass, ages, Z, PZ, PPF, halo location
-    and radius. Units are must be consistent! REMEMBER: r is a radius not a diamter.
+    and radius. Units must be consistent! REMEMBER: r is a radius not a diamter.
     Returned coords are *** relative to haloPos ***. So the center of the view is (0,0)
     Returns locs, mass, ages, Z, PZ, PPF of stars in radius s
     """
@@ -136,7 +135,7 @@ def getHaloStars_origCoord(locs, mass, ages, Z, PZ, PPF, haloPos, radius):
     """getHaloStars_origCoord - returns locations, masses, ages, Z, PZ, PPF of all stars within a specified
     distance of haloPos.
     Parameters are star particle locations, mass, ages, Z, PZ, PPF, halo location
-    and radius. Units are must be consistent! REMEMBER: r is a radius not a diamter.
+    and radius. Units must be consistent! REMEMBER: r is a radius not a diamter.
     Returned coords are in the original system.
     Returns locs, mass, ages, Z, PZ, PPF of stars in radius s
     """
@@ -151,6 +150,19 @@ def getHaloStars_origCoord(locs, mass, ages, Z, PZ, PPF, haloPos, radius):
 
     return haloStars + haloPos, halomass, haloages, haloZ, haloPZ, haloPPF
 
+
+def getHaloStarIndxs(locs, haloPos, radius):
+    """getHaloStarIndxs - returns indices into location array for all stars within
+    radius.
+    Parameters are star particle locations, halo location
+    and radius. Units must be consistent! REMEMBER: r is a radius not a diamter.
+    Returns List of indices into locs within radius
+    """
+    centrd = locs - haloPos  # Recenter the star locations on the halo center
+    dists = np.linalg.norm(centrd, axis=1) # centrd has same size as locs
+    haloStarIndxs = np.where(dists <= radius) # find indices of stars within radius
+
+    return haloStarIndxs[0]
 
 def FindHaloStars(
     locs, haloPos, radius, mass=None, ages=None, Z=None, PZ=None, PPF=None
